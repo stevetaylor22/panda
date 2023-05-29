@@ -1,0 +1,483 @@
+---
+openapi: 3.0.0
+info:
+  description: Swagger file for Patient Appointment Network Data Application API
+  version: 1.0.0
+  title: PANDA API
+paths:
+  /patients:
+    post:
+      operationId: operations.create_patient
+      tags:
+        - patient
+      summary: Create a new patient.
+      description: Create a new patient.
+      parameters:
+        - $ref: "#/components/parameters/nhs_number"
+        - $ref: "#/components/parameters/date_of_birth"
+        - $ref: "#/components/parameters/patient_name"
+        - $ref: "#/components/parameters/postcode"
+      responses:
+        "200":
+          description: Patient successfully created
+          content:
+            application/json:
+              schema:
+                properties:
+                  patient_id:
+                    type: string
+                    minLength: 10
+                    maxLength: 10
+    get:
+      operationId: operations.find_patient
+      tags:
+        - patient
+      summary: Find a patient.
+      description: Find a patient.
+      parameters:
+        - $ref: "#/components/parameters/patient_name"
+        - $ref: "#/components/parameters/date_of_birth_optional"
+      responses:
+        "200":
+          description: Patient query completed successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Patient"
+  /patients/{nhs_number}:
+    put:
+      operationId: operations.update_patient
+      tags:
+        - patient
+      summary: Update a patient.
+      description: Update a patient.
+      parameters:
+        - $ref: "#/components/parameters/nhs_numPath"
+        - $ref: "#/components/parameters/date_of_birth_optional"
+        - $ref: "#/components/parameters/patient_name_optional"
+        - $ref: "#/components/parameters/postcode_optional"
+      responses:
+        "200":
+          description: Patient successfully updated
+          content:
+            application/json:
+              schema:
+                properties:
+                  patient_id:
+                    type: string
+                    minLength: 10
+                    maxLength: 10
+    get:
+      operationId: operations.get_patient
+      tags:
+        - patient
+      summary: Get a patient.
+      description: Get a patient.
+      parameters:
+        - $ref: "#/components/parameters/nhs_numPath"
+      responses:
+        "200":
+          description: Patient successfully found
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/Patient"
+    delete:
+      operationId: operations.delete_patient
+      tags:
+        - patient
+      summary: Delete a patient.
+      description: Delete a patient.
+      parameters:
+        - $ref: "#/components/parameters/nhs_numPath"
+      responses:
+        "200":
+          description: Patient successfully deleted
+
+  /appointments:
+    post:
+      operationId: operations.create_appointment
+      tags:
+        - appointment
+      summary: Create a new patient appointment.
+      description: Create a new patient appointment.
+      parameters:
+        - $ref: "#/components/parameters/patient"
+        - $ref: "#/components/parameters/appointment_time"
+        - $ref: "#/components/parameters/duration"
+        - $ref: "#/components/parameters/clinician"
+        - $ref: "#/components/parameters/department"
+        - $ref: "#/components/parameters/postcode"
+      responses:
+        "200":
+          description: Appointment successfully created
+          content:
+            application/json:
+              schema:
+                properties:
+                  appointment_id:
+                    type: string
+                    format: uuid
+  /appointments/patient/{patient}:
+    get:
+      operationId: operations.get_patient_appointments
+      tags:
+        - appointment
+      summary: Get patient appointments.
+      description: Get patient appointments.
+      parameters:
+        - $ref: "#/components/parameters/patientPath"
+      responses:
+        "200":
+          description: Patient appointments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Appointment"
+  /appointments/clinician/{clinician}:
+    get:
+      operationId: operations.get_clinician_appointments
+      tags:
+        - appointment
+      summary: Get clinician appointments.
+      description: Get clinician appointments.
+      parameters:
+        - $ref: "#/components/parameters/clinicianPath"
+      responses:
+        "200":
+          description: Clinician appointments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Appointment"
+  /appointments/{id}:
+    put:
+      operationId: operations.update_appointment
+      tags:
+        - appointment
+      summary: Update appointment.
+      description: Update appointment date/time, duration, clinician, status.
+      parameters:
+        - $ref: "#/components/parameters/idPath"
+        - $ref: "#/components/parameters/appointment_time_optional"
+        - $ref: "#/components/parameters/duration_optional"
+        - $ref: "#/components/parameters/clinician_optional"
+        - $ref: "#/components/parameters/status_optional"
+      responses:
+        "200":
+          description: Clinician appointments
+          content:
+            application/json:
+              schema:
+                properties:
+                  appointment_id:
+                    type: string
+                    format: uuid
+    get:
+      operationId: operations.get_appointment
+      tags:
+        - appointment
+      summary: Get appointment by id.
+      description: Get appointment by id.
+      parameters:
+        - $ref: "#/components/parameters/idPath"
+      responses:
+        "200":
+          description: Single appointment
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/Appointment"
+
+  /generate_nhs_num:
+    get:
+      operationId: dev_tools.generate_test_nhs_num
+      tags:
+        - test tool
+      summary: Test tool - generate NHS Number
+      description: Test tool - generate NHS Number
+      responses:
+        "200":
+          description: Test NHS Number
+          content:
+            application/json:
+              schema:
+                properties:
+                  nhs_number:
+                    type: string
+                    format: uuid
+
+
+servers:
+  - url: /panda-api
+components:
+  schemas:
+    AppointmentStatus:
+      type: string
+      enum:
+        - 'attended'
+        - 'cancelled'
+        - 'missed'
+        - 'active'
+    Department:
+      type: string
+      enum:
+        - 'oncology'
+        - 'paediatrics'
+        - 'orthopaedics'
+        - 'gastroentology'
+    Duration:
+      type: string
+      enum:
+        - '15m'
+        - '2h'
+        - '1h'
+        - '30m'
+        - '1h30m'
+    Clinician:
+      type: string
+      enum:
+        - 'Dr Jordan Lewis'
+        - 'Rosemary Simmons-West'
+        - 'Beverley Davis'
+        - 'Glenn Palmer'
+        - 'Jason Holloway'
+        - 'Francis Stewart'
+        - 'Ms Geraldine Collins'
+        - 'Alexandra Watson'
+        - 'Bethany Rice-Hammond'
+        - 'Joseph Savage'
+    Appointment:
+      type: object
+      properties:
+        patient:
+          type: string
+        status:
+          $ref: '#/components/schemas/AppointmentStatus'
+        time:
+          type: string
+          # format: date-time - restriction when entering via UI gets annoying, app checks datetimes anyway
+        duration:
+          $ref: '#/components/schemas/Duration'
+        clinician:
+          $ref: '#/components/schemas/Clinician'
+        department:
+          $ref: '#/components/schemas/Department'
+        postcode:
+          type: string
+          maxLength: 8
+        id:
+          type: string
+          format: uuid
+    Patient:
+      type: object
+      properties:
+        patient:
+          type: string
+        date_of_birth:
+          type: string
+          # format: date - restriction when entering via UI gets annoying, app checks dates anyway
+        postcode:
+          type: string
+          maxLength: 8
+        name:
+          type: string
+          maxLength: 50
+
+  parameters:
+    status:
+      name: status
+      in: query
+      description: The status of the appointment
+      required: true
+      schema:
+        $ref: '#/components/schemas/AppointmentStatus'
+    status_optional:
+      name: status
+      in: query
+      description: The status of the appointment
+      required: false
+      schema:
+        $ref: '#/components/schemas/AppointmentStatus'
+    department:
+      name: department
+      in: query
+      description: The department that the patient is to attend
+      required: true
+      schema:
+        $ref: '#/components/schemas/Department'
+    department_optional:
+      name: department
+      in: query
+      description: The department that the patient is to attend
+      required: false
+      schema:
+        $ref: '#/components/schemas/Department'
+    duration:
+      name: duration
+      in: query
+      description: The duration of the appointment
+      required: true
+      schema:
+        $ref: '#/components/schemas/Duration'
+    duration_optional:
+      name: duration
+      in: query
+      description: The duration of the appointment
+      required: false
+      schema:
+        $ref: '#/components/schemas/Duration'
+    clinician:
+      name: clinician
+      in: query
+      description: The clinician that the patient will be meeting
+      required: true
+      schema:
+        $ref: '#/components/schemas/Clinician'
+    clinician_optional:
+      name: clinician
+      in: query
+      description: The clinician that the patient will be meeting
+      required: false
+      schema:
+        $ref: '#/components/schemas/Clinician'
+    date_of_birth:
+      name: date_of_birth
+      in: query
+      description: Date of birth of patient
+      required: true
+      schema:
+        type: string
+        # format: date
+    date_of_birth_optional:
+      name: date_of_birth
+      in: query
+      description: Date of birth of patient
+      required: false
+      schema:
+        type: string
+        # format: date
+    patient_name:
+      name: name
+      in: query
+      description: Name of the the patient
+      required: true
+      schema:
+        type: string
+        maxLength: 50
+    patient_name_path:
+      name: name
+      in: path
+      description: Name of the the patient
+      required: true
+      schema:
+        type: string
+        maxLength: 50
+    patient_name_optional:
+      name: name
+      in: query
+      description: Name of the the patient
+      required: false
+      schema:
+        type: string
+        maxLength: 50
+    appointment_time:
+      name: time
+      in: query
+      description: The date and time of the appointment
+      required: true
+      schema:
+        type: string
+        example: "2023-06-10 09:00"
+        # format: date-time
+    appointment_time_optional:
+      name: time
+      in: query
+      description: The date and time of the appointment
+      required: false
+      schema:
+        type: string
+        example: "2023-06-10 09:00"
+        # format: date-time
+    patient:
+      name: patient
+      in: query
+      description: The NHS number of the patient
+      required: true
+      schema:
+        type: string
+        minLength: 10
+        maxLength: 10
+        example: "0296646717"
+    nhs_number:
+      name: nhs_number
+      in: query
+      description: The NHS number of the patient
+      required: true
+      schema:
+        type: string
+        minLength: 10
+        maxLength: 10
+        example: "0296646717"
+    postcode:
+      name: postcode
+      in: query
+      description: Royal Mail Postcode
+      required: true
+      schema:
+        type: string
+        maxLength: 8
+        example: "L1 8LZ"
+    postcode_optional:
+      name: postcode
+      in: query
+      description: Royal Mail Postcode
+      required: false
+      schema:
+        type: string
+        maxLength: 8
+    patientPath:
+      name: patient
+      in: path
+      description: Patient NHS number
+      required: true
+      schema:
+        type: string
+        minLength: 10
+        maxLength: 10
+        example: "0296646717"
+    nhs_numPath:
+      name: nhs_number
+      in: path
+      description: Patient NHS number
+      required: true
+      schema:
+        type: string
+        minLength: 10
+        maxLength: 10
+        example: "0296646717"
+    clinicianPath:
+      name: clinician
+      in: path
+      description: Clinician
+      required: true
+      schema:
+        $ref: "#/components/schemas/Clinician"
+    idPath:
+      name: id
+      in: path
+      description: Appointment Id
+      required: true
+      schema:
+        type: string
+        format: uuid
+        example: "6dbbb84a-9624-48d6-afe6-d1596d4efb2d"
+
