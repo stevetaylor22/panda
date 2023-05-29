@@ -87,6 +87,7 @@ Press CTRL+C to quit
 - I assume that for audit reasons the customer does not want the facility to delete appointments to be provided.
 - Haven't done anything special for appointments postcode, assuming FE gets that from elsewhere
 - I've returned 400's in some cases where I probably wouldn't in production but I've done it to signal to the user that the result is probably not what was expected.
+- I've not had time to add code to check for time wasted in unattended appointments but I've stored the appointment duration time as and integer representing minutes so that it should be relatively simple to add this functionality.
 
 ### TODO:
 
