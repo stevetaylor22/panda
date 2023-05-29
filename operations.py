@@ -29,6 +29,24 @@ data_store = get_data_store()
 appointments_app = PatientAppointmentsApp(data_store)
 
 
+"""
+This file contains functions to handle requests initially processed 
+by the connexion module https://pypi.org/project/connexion/
+
+The API definition file apidef/patient-app.yml contains
+mappings from HTTP methods to these functions
+ 
+The main purpose of these functions:
+1. Validate incoming parameters
+2. Make calls the instance of the application class PatientAppointmentsApp
+3. Handle exceptions and return appropriate messages
+
+All the functions operate in a similar way so I have not commented them individually
+
+I have provided comments for any code which might appear unusual 
+"""
+
+
 #######################
 # APPOINTMENT HANDLERS
 #######################
@@ -195,6 +213,11 @@ def delete_patient(**kwargs) -> Tuple[Union[dict, str], int]:
 
 
 def populate_sample_data() -> None:
+    """
+    Populate the database with sample data in json files located in sample_data
+    Intended to only be called on startup if the database is found to be empty
+    :return:
+    """
     with open("./sample_data/example_patients.json", "r") as json_file:
         contents = json.load(json_file)
         for jDict in contents:

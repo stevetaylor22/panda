@@ -51,6 +51,11 @@ MINS_TO_DURATION: Dict[int, Duration] = {
 
 
 def strToDuration(duration_str: str) -> Duration:
+    """
+    Convert a duration string rxd from FE to Duration enum
+    :param duration_str: rxd from FE
+    :return: Duration enum
+    """
     for duration in Duration:
         if duration.value == duration_str:
             return duration
@@ -58,6 +63,11 @@ def strToDuration(duration_str: str) -> Duration:
 
 
 def strToStatus(status_str: str) -> Status:
+    """
+    Convert a status string rxd from FE to Status enum
+    :param status_str: rxd from FE
+    :return: Status enum
+    """
     for status in Status:
         if status.value == status_str:
             return status
@@ -91,6 +101,12 @@ MIN_POSTCODE_LENGTH = 5
 
 
 def validate_postcode(postcode: str) -> bool:
+    """
+    Validate a postcode according to regex specified by UK Gov
+    Allow for incorrect placing of space char
+    :param postcode: postcode string to check
+    :return: True if matches postcode format
+    """
     # Get rid of any spaces
     no_space = postcode.replace(" ", "")
     # Check is at least minimum length
@@ -112,22 +128,48 @@ Optional values seeping into the application as much as possible
 
 
 def get_str_field(args: dict, field_name: str) -> str:
+    """
+    Get a string field from the args rxd from the FE
+    Raise Exception if not present
+    :param args: Args originating from FE
+    :param field_name: Name of the field requested
+    :return: field value string
+    """
     if field_name not in args.keys():
         raise MissingFieldException(field_name)
     return str(args[field_name])
 
 
 def get_duration_field(args: dict, field_name: str) -> Duration:
+    """
+    Get duration field str and convert to enum
+    :param args: Args originating from FE
+    :param field_name: Name of the field requested
+    :return: Duration enum
+    """
     field = get_str_field(args, field_name)
     return strToDuration(field)
 
 
 def get_status_field(args: dict, field_name: str) -> Status:
+    """
+    Get status field str and convert to enum
+    :param args: Args originating from FE
+    :param field_name: Name of the field requested
+    :return: Status enum
+    """
     field = get_str_field(args, field_name)
     return strToStatus(field)
 
 
 def get_date_field(args: dict, field_name: str) -> date:
+    """
+    Get date field str and convert to enum.
+    The parser is lenient
+    :param args: Args originating from FE
+    :param field_name: Name of the field requested
+    :return: date value
+    """
     field = get_str_field(args, field_name)
     try:
         return parse(field, fuzzy=True).date()
@@ -136,6 +178,13 @@ def get_date_field(args: dict, field_name: str) -> date:
 
 
 def get_datetime_field(args: dict, field_name: str) -> datetime:
+    """
+    Get datetime field str and convert to enum.
+    The parser is lenient
+    :param args: Args originating from FE
+    :param field_name: Name of the field requested
+    :return: datetime value
+    """
     field = get_str_field(args, field_name)
     try:
         return parse(field, fuzzy=True).utcnow()
@@ -144,6 +193,12 @@ def get_datetime_field(args: dict, field_name: str) -> datetime:
 
 
 def get_postcode_str(args: dict, field_name: str) -> str:
+    """
+    Get postcode field str and validate.
+    :param args: Args originating from FE
+    :param field_name: Name of the field requested
+    :return: validated postcode str
+    """
     postcode = get_str_field(args, field_name)
     if not validate_postcode(postcode):
         raise InvalidPostcodeException(postcode)
@@ -151,6 +206,12 @@ def get_postcode_str(args: dict, field_name: str) -> str:
 
 
 def get_patient_id(args: dict, field_name: str) -> str:
+    """
+    Get NHS Number field str and validate.
+    :param args: Args originating from FE
+    :param field_name: Name of the field requested
+    :return: validated NHS Number str
+    """
     patient_id = get_str_field(args, field_name)
     if not validate_patient_id(patient_id):
         raise InvalidPatientIdException(patient_id)

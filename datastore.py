@@ -7,9 +7,22 @@ from typing import List
 from exceptions import MissingDatastoreException
 
 
-# Abstract DataStore Definition
+"""
+Abstract DataStore Definition
+
+This file contains classes which exist to completely abstract
+Data Storage implementation from use
+
+The function set_data_store and get_data_store are important
+as the are used to set and retrieve the live application 
+DataStore instance
+"""
+
 
 class Appointment:
+    """
+    Data class containing Appointment information
+    """
     def __init__(self, id: str, patient_id: str, status: str, time: datetime, duration_mins: int, clinician: str,
                  department: str, postcode: str):
         self.id = id
@@ -23,6 +36,9 @@ class Appointment:
 
 
 class Patient:
+    """
+    Data class containing Patient information
+    """
     def __init__(self, nhs_num: str, name: str, date_of_birth: date, postcode: str):
         self.nhs_num = nhs_num
         self.name = name
@@ -31,6 +47,9 @@ class Patient:
 
 
 class DataStore(Protocol):
+    """
+    Abstract Data Store Definition
+    """
     def create_appointment(self, patient: str, appointment_time: datetime, duration_mins: int,
                            clinician: str, department: str, postcode: str, appointment_id: Optional[str] = None) -> str:
         ...
@@ -73,12 +92,21 @@ class DataStore(Protocol):
 DATA_STORE: Optional[DataStore] = None
 
 
-def set_data_store(data_store: DataStore):
+def set_data_store(data_store: DataStore) -> None:
+    """
+    Call this function to set the DataStore used by the app
+    :param data_store: An implementation of DataStore
+    :return: None
+    """
     global DATA_STORE
     DATA_STORE = data_store
 
 
 def get_data_store() -> DataStore:
+    """
+    Call this function to get the DataStore for the app to use
+    :return: An implementation of DataStore
+    """
     global DATA_STORE
     if DATA_STORE is None:
         raise MissingDatastoreException("No DataStore instance has been set for PANDA")

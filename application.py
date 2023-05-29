@@ -48,7 +48,11 @@ PATIENT_ID_FIELD = "patient_id"
 
 
 class PatientAppointmentsApp:
-
+    """
+    Repository of Application business logic
+    Handles validated requests and performs related queries
+    Checks for disallowed requests
+    """
     def __init__(self, dataStore: DataStore):
         self.dataStore = dataStore
 
