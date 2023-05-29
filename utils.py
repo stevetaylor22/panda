@@ -3,6 +3,7 @@ from datetime import date
 from datetime import datetime
 from enum import Enum
 from typing import Dict
+import pytz
 
 from dateutil.parser import parse
 from dateutil.parser import ParserError
@@ -14,6 +15,8 @@ from exceptions import InvalidDateException
 from exceptions import InvalidDateTimeException
 from exceptions import InvalidPostcodeException
 from exceptions import InvalidPatientIdException
+
+utc = pytz.UTC
 
 
 # Enums and converters
@@ -187,7 +190,7 @@ def get_datetime_field(args: dict, field_name: str) -> datetime:
     """
     field = get_str_field(args, field_name)
     try:
-        return parse(field, fuzzy=True).utcnow()
+        return parse(field, fuzzy=True).replace(tzinfo=utc)
     except ParserError as pe:
         raise InvalidDateTimeException(field) from pe
 

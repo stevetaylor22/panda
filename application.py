@@ -2,6 +2,7 @@ from datetime import datetime
 from datetime import date
 from typing import List
 from typing import Optional
+import pytz
 
 from datastore import DataStore, Appointment, Patient
 from exceptions import NoResultsException, TimeInTheFutureException
@@ -11,6 +12,8 @@ from exceptions import PatientNotFoundException
 from messages import MSG_CANT_REINSTATE_CANCELLED
 from utils import Duration, MINS_TO_DURATION, Status
 from utils import DURATION_TO_MINS
+
+utc = pytz.UTC
 
 
 def appointment_to_dict(appointment: Appointment) -> dict:
@@ -36,7 +39,7 @@ def patient_to_dict(patient: Patient) -> dict:
 
 
 def time_in_the_future(time: datetime) -> bool:
-    return time > datetime.now()
+    return time > datetime.now().replace(tzinfo=utc)
 
 
 def date_in_the_future(dateVal: date) -> bool:

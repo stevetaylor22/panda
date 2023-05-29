@@ -11,7 +11,7 @@
 - **docker build --tag panda-stevet-docker .**
 - The build will probably take a few minutes
 - Once that's finished you should be able to run the container with:
-- **docker run -i -t -p 8090:8090 panda panda-stevet-docker**
+- **docker run -i -t -p 8090:8090 --name panda panda-stevet-docker**
 - To change the port on your local machine change the first value of **-p *8090*:8090**
 - You can stop the container with ctrl-c
 - To run again (after the first time) you just need:
