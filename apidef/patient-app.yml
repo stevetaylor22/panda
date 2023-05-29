@@ -213,7 +213,6 @@ paths:
                 properties:
                   nhs_number:
                     type: string
-                    format: uuid
 
 
 servers:
