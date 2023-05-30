@@ -89,7 +89,7 @@ Press CTRL+C to quit
 ## Development Notes
 
 - I decided to concentrate on setting up a framework that is relatively quick and simple to modify by changing the business logic in class PatientAppointmentsApp (application.py).
-- I chose to not create separate tables for clinicians and departments because in the example appointments they are not uniquely identifiable and tests showed that there weren't many in the sample data.  For that reason I've added them as enums in the API def for the time being, as it will make evaluation of the API a bit nicer in the auto-generated UI.   
+- I chose to not create separate tables for clinicians and departments because in the example appointments they are not uniquely identifiable from the sample data and tests showed that there weren't many in the sample data.  For that reason I've added them as enums in the API def for the time being, as it will make evaluation of the API a bit nicer in the auto-generated UI.   
 - I assume that for audit reasons the customer does not want the facility to delete appointments to be provided.
 - Haven't done anything special for appointments postcode, assuming FE gets that from elsewhere
 - I've returned 400's in some cases where I probably wouldn't in production but I've done it to signal to the user that the result is probably not what was expected.
