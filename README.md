@@ -51,6 +51,12 @@ Press CTRL+C to quit
 - http://localhost:8090/panda-api/ui/#/test%20tool/dev_tools.generate_test_nhs_num
 - To try a HTTP method it is necessary to click on the button on the right-hand side with the label "Try it out"
 - Most fields are populated with example data
+- App accepts dates formatted like so: 2023-01-01
+
+### Example Manual Test
+- Generate a new NHS Number using http://localhost:8090/panda-api/ui/#/test%20tool/dev_tools.generate_test_nhs_num
+- Copy the generated number which appears in the response body
+- Use it to create a new patient 
 
 ## Front End Clients
 - The API is defined according to the OpenAPI 3 specification and can be found in YAML file: apidef/patient-app.yml
@@ -100,4 +106,4 @@ Press CTRL+C to quit
 - Paging of results
 - Sort out use of name "id" in Appointment (currently used for compatibility with sample data)
 - At the moment it fails fast i.e. aborts when it detects the first invalid field, would be nicer if it reported all invalid fields at once
-
+- App needs to check patient exists when creating an appointment

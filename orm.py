@@ -132,6 +132,8 @@ class AlchemyDatastore(DataStore):
         stmt = select(ORMPatient).where(ORMPatient.nhs_num == patient_id)
         with Session(self.engine) as session:
             patient: ORMPatient = session.scalar(stmt)
+            if patient is None:
+                raise PatientNotFoundException(patient_id)
             do_commit = False
             if date_of_birth is not None:
                 patient.date_of_birth = date_of_birth
