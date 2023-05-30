@@ -5,6 +5,7 @@ from datetime import datetime
 from typing import Optional
 from typing import List
 from unittest import TestCase
+import pytz
 
 from dateutil.relativedelta import relativedelta
 
@@ -20,6 +21,7 @@ from exceptions import PatientNotFoundException
 from utils import Duration
 from utils import Status
 
+utc = pytz.UTC
 
 class MockDataStore(DataStore):
 
@@ -76,7 +78,7 @@ class TestPatientAppointmentsApp(TestCase):
         self.patient_app = PatientAppointmentsApp(self.data_store)
 
     def test_create_appointment(self):
-        now = datetime.now()
+        now = datetime.now().replace(tzinfo=utc)
         test_date_time_future = now + relativedelta(years=1)
         result = self.patient_app.create_appointment("2179136439", test_date_time_future, Duration.MINS_90,
                                                      "Francis Stewart", "gastroentology", "LA10 3TZ")
